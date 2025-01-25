@@ -13,17 +13,12 @@ class DailyPictureViewController: UIViewController {
     var imageView = UIImageView()
     var copyrightLabel = UILabel()
     
-    struct HHTTPNasaResponse: Decodable {
-        let url, explanation, copyright, title, date: String
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupLoadingIndicator()
         getNasaData()
         setLayout()
-        // Do any additional setup after loading the view.
         
         
     }
@@ -62,14 +57,14 @@ class DailyPictureViewController: UIViewController {
 
     func setupLoadingIndicator() {
         loadingIndicator = UIActivityIndicatorView(style: .large)
-        loadingIndicator.center = view.center // Center the spinner on the screen
-        loadingIndicator.hidesWhenStopped = true // Automatically hides when stopped
+        loadingIndicator.center = view.center
+        loadingIndicator.hidesWhenStopped = true
         view.addSubview(loadingIndicator)
     }
     
     func showLoadingIndicator() {
         loadingIndicator.startAnimating()
-        view.isUserInteractionEnabled = false // Optional: Disable user interaction while loading
+        view.isUserInteractionEnabled = false
     }
 
     func hideLoadingIndicator() {
@@ -80,7 +75,7 @@ class DailyPictureViewController: UIViewController {
     
     func getNasaData() {
         showLoadingIndicator()
-         AF.request(URL(string: "https://api.nasa.gov/planetary/apod?api_key=BB09b87UySqt1CmhyAkMJcEciQsaTzwC6YdGcNBa")!).responseDecodable(of: HHTTPNasaResponse.self) { response in
+         AF.request(URL(string: "https://api.nasa.gov/planetary/apod?api_key=BB09b87UySqt1CmhyAkMJcEciQsaTzwC6YdGcNBa")!).responseDecodable(of: NasaPODResponse.self) { response in
              
              switch response.result {
              case .success:
@@ -88,7 +83,7 @@ class DailyPictureViewController: UIViewController {
                  let copyright = response.value?.copyright ?? ""
                  let title = response.value?.title ?? ""
                  let date = response.value?.date ?? ""
-                 let explanation = response.value?.explanation ?? ""
+                 //let explanation = response.value?.explanation ?? ""
 
 
 
