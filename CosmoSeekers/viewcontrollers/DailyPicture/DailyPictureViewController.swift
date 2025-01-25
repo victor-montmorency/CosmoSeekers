@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 
 class DailyPictureViewController: UIViewController {
-    
+    var ratio: CGFloat = 1.0
     var imageView = UIImageView()
     var copyrightLabel = UILabel()
     
@@ -42,7 +42,7 @@ class DailyPictureViewController: UIViewController {
             imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.widthAnchor),
+            
 
             
            copyrightLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor),
@@ -83,17 +83,26 @@ class DailyPictureViewController: UIViewController {
                  let copyright = response.value?.copyright ?? ""
                  let title = response.value?.title ?? ""
                  let date = response.value?.date ?? ""
-                 //let explanation = response.value?.explanation ?? ""
+                 let explanation = response.value?.explanation ?? ""
 
 
 
                  AF.download(url).responseData { response in
                              if let data = response.value {
-                                 self.imageView.image = UIImage(data: data)
+                                 let img = UIImage(data: data)
+                                 self.imageView.image = img
                              }
-                     self.hideLoadingIndicator()
+                     self.ratio = ((self.imageView.image?.size.width)!/(self.imageView.image?.size.height)!)
+                     print(self.ratio)
+                     NSLayoutConstraint.activate([
+                        self.imageView.heightAnchor.constraint(equalToConstant: self.view.frame.width/self.ratio),
+                     ])
+                     self.view.setNeedsLayout()
+                    self.hideLoadingIndicator()
+
+
                              }
-                 self.copyrightLabel.text = "'\(title)'\nby \(copyright)\n\(date)\n"
+                 self.copyrightLabel.text = "'\(title)'\nby \(copyright)\n\(date)\n \(explanation)"
                  debugPrint(copyright)
 
 
