@@ -11,6 +11,14 @@ struct exoplanetarchiveResponse: Decodable {
     let disc_year: Int
     
 }
+struct Response: Codable {
+    let countPlName: Int
+
+    // Define a custom coding key
+    private enum CodingKeys: String, CodingKey {
+        case countPlName = "count(pl_name)"
+    }
+}
 struct NasaPODResponse: Decodable {
     let url, explanation, copyright, title, date: String
 }

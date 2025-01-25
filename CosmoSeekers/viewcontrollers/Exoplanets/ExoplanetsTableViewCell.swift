@@ -36,23 +36,25 @@ class ExoplanetsTableViewCell: UITableViewCell {
         contentView.addSubview(discYearLabel)
         
         NSLayoutConstraint.activate([
-            plNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            plNameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             plNameLabel.topAnchor.constraint(equalTo: self.topAnchor),
-            discYearLabel.leadingAnchor.constraint(equalTo: plNameLabel.trailingAnchor),
-            discYearLabel.topAnchor.constraint(equalTo: plNameLabel.topAnchor),
-            discoverymethodLabel.topAnchor.constraint(equalTo: plNameLabel.bottomAnchor, constant: 20),
-            discoverymethodLabel.leadingAnchor.constraint(equalTo: plNameLabel.leadingAnchor),
-            discFacilityLabel.topAnchor.constraint(equalTo: discoverymethodLabel.bottomAnchor, constant: 20),
-            discFacilityLabel.leadingAnchor.constraint(equalTo: plNameLabel.leadingAnchor)
+            discFacilityLabel.topAnchor.constraint(equalTo: plNameLabel.bottomAnchor),
+            discFacilityLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            discYearLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            discYearLabel.topAnchor.constraint(equalTo: discFacilityLabel.bottomAnchor),
+            discoverymethodLabel.topAnchor.constraint(equalTo: discYearLabel.topAnchor),
+            discoverymethodLabel.leadingAnchor.constraint(equalTo: discYearLabel.trailingAnchor),
+
             
         ])
     }
     
     func configure(with exoplanet: exoplanetarchiveResponse){
         plNameLabel.text = exoplanet.pl_name
-        discoverymethodLabel.text = exoplanet.discoverymethod
-        discYearLabel.text = String(exoplanet.disc_year)
-        discFacilityLabel.text = exoplanet.disc_facility
+        discoverymethodLabel.text = "using \(exoplanet.discoverymethod) method"
+        let discYear = String(exoplanet.disc_year)
+        discYearLabel.text = "in \(discYear)"
+        discFacilityLabel.text = "discovered by \(exoplanet.disc_facility)"
     }
     
     required init?(coder: NSCoder) {

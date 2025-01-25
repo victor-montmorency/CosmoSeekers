@@ -9,14 +9,16 @@ import UIKit
 import Alamofire
 
 class ExoplanetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    var countLabel = UILabel()
     var tableView: UITableView!
     var exoplanets: [exoplanetarchiveResponse] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLoadingIndicator()
-        getLast20DiscoveredPlanetsInfo()
         setupUI()
+        getLast20DiscoveredPlanetsInfo()
+        getTotalCountExoplanets()
     }
     
     func setupUI(){
@@ -24,15 +26,19 @@ class ExoplanetsViewController: UIViewController, UITableViewDataSource, UITable
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(ExoplanetsTableViewCell.self, forCellReuseIdentifier: "ExoplanetsTableViewCell")
-        tableView.rowHeight = 100
+        tableView.rowHeight = 60
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        countLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(countLabel)
         
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
-            tableView.heightAnchor.constraint(equalToConstant: 400),
+            countLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            countLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.topAnchor.constraint(equalTo: countLabel.bottomAnchor),
+            tableView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor)
         ])
         
     }
@@ -54,6 +60,23 @@ class ExoplanetsViewController: UIViewController, UITableViewDataSource, UITable
      func hideLoadingIndicator() {
         loadingIndicator.stopAnimating()
         view.isUserInteractionEnabled = true
+    }
+    
+    func getTotalCountExoplanets(){
+        let urlString = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+count(pl_name)+from+ps+where+default_flag=1&format=json"
+        AF.request(URL(string: urlString)!).responseDecodable(of: [Response].self){
+            response in
+            DispatchQueue.main.async {
+                switch response.result {
+                case .success(let test):
+                    let numberOfPlanets = String(test[0].countPlName)
+                    self.countLabel.text = "Já foram descobertos \(numberOfPlanets) exoplanetas!!!"
+                    print(numberOfPlanets)
+                case .failure:
+                    debugPrint(response.error?.localizedDescription ?? "")
+                }
+            }
+        }
     }
     
      func getLast20DiscoveredPlanetsInfo() {
@@ -90,10 +113,6 @@ class ExoplanetsViewController: UIViewController, UITableViewDataSource, UITable
         cell.configure(with: data)
         return cell
     }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Last 20 discovered exoplanets"
-    }
-
     
      func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         if let header = view as? UITableViewHeaderFooterView {
@@ -101,5 +120,10 @@ class ExoplanetsViewController: UIViewController, UITableViewDataSource, UITable
             header.textLabel?.textColor = .darkGray
         }
     }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        return "Last discovered exoplanets"
+    }
+
 
 }
