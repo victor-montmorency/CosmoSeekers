@@ -10,49 +10,116 @@ import Alamofire
 
 class DailyPictureViewController: UIViewController {
     var ratio: CGFloat = 1.0
-    var imageView = UIImageView()
-    var copyrightLabel = UILabel()
+    let scrollView = UIScrollView()
+    let contentView = UIView()
+    let imageView = UIImageView()
+    let imageGivenName = UILabel()
+    let authorName = UILabel()
+    let dateLabel = UILabel()
+    let explanationLabel = UILabel()
+
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupLoadingIndicator()
         getNasaData()
-        setLayout()
-        
-        
+//        setLayout()
+        setScrollView()
     }
     
-    func setLayout() {
-
+    private func setScrollView(){
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(scrollView)
         
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.clipsToBounds = true
-        view.addSubview(imageView)
-
-        copyrightLabel.translatesAutoresizingMaskIntoConstraints = false
-        copyrightLabel.numberOfLines = 0
-        copyrightLabel.lineBreakMode = .byWordWrapping
-        copyrightLabel.textAlignment = .center
-        view.addSubview(copyrightLabel)
+        self.scrollView.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let hConst = contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+        hConst.isActive = true
+        hConst.priority = UILayoutPriority(50)
 
         
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             
+            contentView.topAnchor.constraint(equalTo: self.scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor),
+            
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
+        ])
+        configureLayout()
+    }
+    
+    private func configureLayout() {
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        contentView.addSubview(imageView)
+        
+        imageGivenName.translatesAutoresizingMaskIntoConstraints = false
+        imageGivenName.numberOfLines = 0
+        imageGivenName.lineBreakMode = .byWordWrapping
+        imageGivenName.textAlignment = .center
+        imageGivenName.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        contentView.addSubview(imageGivenName)
+        
+        authorName.translatesAutoresizingMaskIntoConstraints = false
+        authorName.numberOfLines = 0
+        authorName.lineBreakMode = .byWordWrapping
+        authorName.textAlignment = .center
+        authorName.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        contentView.addSubview(authorName)
+        
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.numberOfLines = 0
+        dateLabel.lineBreakMode = .byWordWrapping
+        dateLabel.textAlignment = .center
+        dateLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        contentView.addSubview(dateLabel)
+
+        explanationLabel.translatesAutoresizingMaskIntoConstraints = false
+        explanationLabel.numberOfLines = 0
+        explanationLabel.lineBreakMode = .byWordWrapping
+        explanationLabel.textAlignment = .justified
+        contentView.addSubview(explanationLabel)
+        
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            
+            imageView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            
+            imageGivenName.topAnchor.constraint(equalTo: imageView.bottomAnchor),
+            imageGivenName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageGivenName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            imageGivenName.centerYAnchor.constraint(equalTo: imageGivenName.centerYAnchor),
 
             
-           copyrightLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor),
-            copyrightLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            copyrightLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            copyrightLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            authorName.topAnchor.constraint(equalTo: imageGivenName.bottomAnchor),
+            authorName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            authorName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+
+            
+            dateLabel.topAnchor.constraint(equalTo: authorName.bottomAnchor),
+            dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            explanationLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor),
+            explanationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            explanationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            explanationLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
             ])
     }
-    
+
     var loadingIndicator: UIActivityIndicatorView!
 
     func setupLoadingIndicator() {
@@ -97,12 +164,17 @@ class DailyPictureViewController: UIViewController {
                      NSLayoutConstraint.activate([
                         self.imageView.heightAnchor.constraint(equalToConstant: self.view.frame.width/self.ratio),
                      ])
+                     self.hideLoadingIndicator()
+
                      self.view.setNeedsLayout()
-                    self.hideLoadingIndicator()
 
 
                              }
-                 self.copyrightLabel.text = "'\(title)'\nby \(copyright)\n\(date)\n \(explanation)"
+                 self.imageGivenName.text = title
+                 self.authorName.text = copyright
+                 self.dateLabel.text = date
+                 self.explanationLabel.text = explanation
+
                  debugPrint(copyright)
 
 
