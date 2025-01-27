@@ -75,7 +75,7 @@ class DailyPictureViewController: UIViewController {
         authorName.numberOfLines = 0
         authorName.lineBreakMode = .byWordWrapping
         authorName.textAlignment = .center
-        authorName.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        authorName.font = UIFont.preferredFont(forTextStyle: .title3)
         contentView.addSubview(authorName)
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -87,8 +87,9 @@ class DailyPictureViewController: UIViewController {
 
         explanationLabel.translatesAutoresizingMaskIntoConstraints = false
         explanationLabel.numberOfLines = 0
-        explanationLabel.lineBreakMode = .byWordWrapping
+        explanationLabel.lineBreakMode = .byCharWrapping
         explanationLabel.textAlignment = .justified
+        explanationLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         contentView.addSubview(explanationLabel)
         
         NSLayoutConstraint.activate([
@@ -112,10 +113,11 @@ class DailyPictureViewController: UIViewController {
             dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            explanationLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor),
+            explanationLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 40),
             explanationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             explanationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            explanationLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            explanationLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
+            
 
             ])
     }
@@ -146,12 +148,14 @@ class DailyPictureViewController: UIViewController {
              
              switch response.result {
              case .success:
+                 
                  let url = response.value?.url ?? ""
-                 let copyright = response.value?.copyright ?? ""
+                 let copyright = response.value?.copyright.replacingOccurrences(of: "\n", with: "") ?? ""
+                 debugPrint(copyright)
                  let title = response.value?.title ?? ""
                  let date = response.value?.date ?? ""
                  let explanation = response.value?.explanation ?? ""
-
+                 
 
 
                  AF.download(url).responseData { response in
@@ -160,7 +164,6 @@ class DailyPictureViewController: UIViewController {
                                  self.imageView.image = img
                              }
                      self.ratio = ((self.imageView.image?.size.width)!/(self.imageView.image?.size.height)!)
-                     print(self.ratio)
                      NSLayoutConstraint.activate([
                         self.imageView.heightAnchor.constraint(equalToConstant: self.view.frame.width/self.ratio),
                      ])
@@ -171,11 +174,11 @@ class DailyPictureViewController: UIViewController {
 
                              }
                  self.imageGivenName.text = title
+                 
                  self.authorName.text = copyright
                  self.dateLabel.text = date
                  self.explanationLabel.text = explanation
 
-                 debugPrint(copyright)
 
 
              case .failure:
