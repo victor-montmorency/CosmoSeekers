@@ -87,8 +87,8 @@ class DailyPictureViewController: UIViewController {
 
         explanationLabel.translatesAutoresizingMaskIntoConstraints = false
         explanationLabel.numberOfLines = 0
-        explanationLabel.lineBreakMode = .byCharWrapping
-        explanationLabel.textAlignment = .justified
+        explanationLabel.lineBreakMode = .byWordWrapping
+        explanationLabel.textAlignment = .center
         explanationLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         contentView.addSubview(explanationLabel)
         
