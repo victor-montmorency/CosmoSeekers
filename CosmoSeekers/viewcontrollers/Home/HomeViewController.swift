@@ -79,6 +79,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         switch indexPath {
         case IndexPath(item: 0, section: 0):
             navigationController?.pushViewController(DailyPictureViewController(), animated: true)
+
         case IndexPath(item: 1, section: 0):
             navigationController?.pushViewController(ExoplanetsViewController(), animated: true)
         default:

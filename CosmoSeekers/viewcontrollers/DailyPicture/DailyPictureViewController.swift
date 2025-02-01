@@ -22,6 +22,7 @@ class DailyPictureViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Nasa's Image of the day"
         view.backgroundColor = .systemBackground
         setupLoadingIndicator()
         getNasaData()
