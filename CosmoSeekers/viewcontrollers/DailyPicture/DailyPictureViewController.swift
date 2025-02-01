@@ -93,7 +93,7 @@ class DailyPictureViewController: UIViewController {
         contentView.addSubview(explanationLabel)
         
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
             imageView.widthAnchor.constraint(equalTo: contentView.widthAnchor),

@@ -28,9 +28,10 @@ class CustomCollectionViewCell: UICollectionViewCell {
         return lbl
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
 
+    func configure(text: String, image: UIImage?) {
+        label.text = text
+        backgroundImage.image = image
         contentView.layer.cornerRadius = 20
         contentView.clipsToBounds = true
 
@@ -50,14 +51,5 @@ class CustomCollectionViewCell: UICollectionViewCell {
             label.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func configure(text: String, image: UIImage?) {
-        label.text = text
-        backgroundImage.image = image
     }
 }

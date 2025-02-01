@@ -22,12 +22,13 @@ class ExoplanetsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func setupUI(){
-        tableView = UITableView(frame: view.bounds, style: .plain)
+        tableView = UITableView(frame: view.safeAreaLayoutGuide.layoutFrame, style: .plain)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(ExoplanetsTableViewCell.self, forCellReuseIdentifier: "ExoplanetsTableViewCell")
         tableView.rowHeight = 60
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemBackground
         countLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(countLabel)
         
@@ -117,7 +118,6 @@ class ExoplanetsViewController: UIViewController, UITableViewDataSource, UITable
      func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         if let header = view as? UITableViewHeaderFooterView {
             header.textLabel?.textAlignment = .center
-            header.textLabel?.textColor = .darkGray
         }
     }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

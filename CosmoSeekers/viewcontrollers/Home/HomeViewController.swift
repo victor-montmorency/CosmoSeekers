@@ -15,14 +15,21 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = .systemBackground
         setupCollectionView()
     }
     
     
 
     func setupCollectionView() {
-
+        let label = UILabel()
+        label.text = "From NASA"
+        label.textColor = .label
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textColor = .label
+        self.view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
         // Create a flow layout
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal  // Set scroll direction to horizontal
@@ -34,7 +41,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .systemBlue
 
         // Register Cell
         collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
@@ -48,9 +54,11 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
 
         // Constraints
         NSLayoutConstraint.activate([
-
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            collectionView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 5),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 188)
@@ -66,5 +74,15 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCollectionViewCell
         cell.configure(text: labelArray[indexPath.item], image: imageArray[indexPath.item])
         return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath {
+        case IndexPath(item: 0, section: 0):
+            navigationController?.pushViewController(DailyPictureViewController(), animated: true)
+        case IndexPath(item: 1, section: 0):
+            navigationController?.pushViewController(ExoplanetsViewController(), animated: true)
+        default:
+            break
+        }
     }
 }
