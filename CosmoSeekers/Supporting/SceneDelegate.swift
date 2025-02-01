@@ -18,8 +18,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Cria a janela principal
         let window = UIWindow(windowScene: windowScene)
         
+        
         // Define o ViewController inicial
-        window.rootViewController = TabBarController()
+        window.rootViewController = createSeachNavigationController()
+        
+        func createSeachNavigationController () -> UINavigationController {
+            let homeVC = HomeViewController()
+            homeVC.title = "CosmoSeekers"
+            homeVC.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
+            let navController = UINavigationController(rootViewController: homeVC)
+                navController.navigationBar.prefersLargeTitles = true
+            navController.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+            return navController
+            }
         
         // Torna a janela visível
         window.makeKeyAndVisible()
