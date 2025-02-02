@@ -10,16 +10,70 @@ import UIKit
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     private let imageArray: [UIImage] = [UIImage(named: "nebula")!, UIImage(named: "Gasdwarf")!, UIImage(named: "exoplanets-1")!]
     private let labelArray: [String] = ["Nasa's Image of the day", "Exoplanets", "lorem"]
-    
+    let scrollView = UIScrollView()
+    let contentView = UIView() 
     var collectionView: UICollectionView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        setScrollView()
         setupCollectionView()
+        setupNewsSection()
     }
     
+    private func setScrollView(){
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(scrollView)
+        
+        
+        self.scrollView.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let hConst = contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+        hConst.isActive = true
+        hConst.priority = UILayoutPriority(50)
+
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: self.scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor),
+            
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
+        ])
+    }
     
+    func setupNewsSection() {
+        let newsSectionTitle = UILabel()
+        contentView.addSubview(newsSectionTitle)
+        let newsView = NewsView()
+        contentView.addSubview(newsView)
+        newsView.translatesAutoresizingMaskIntoConstraints = false
+        newsSectionTitle.text = "Recent News"
+        newsSectionTitle.textColor = .label
+        newsSectionTitle.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        newsSectionTitle.textColor = .label
+        newsSectionTitle.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            newsSectionTitle.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 32),
+            newsSectionTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            newsView.topAnchor.constraint(equalTo: newsSectionTitle.bottomAnchor),
+            newsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            newsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+
+            newsView.heightAnchor.constraint(equalToConstant: 200),
+
+            
+        ])
+    }
 
     func setupCollectionView() {
         let label = UILabel()
@@ -54,13 +108,13 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
 
         // Constraints
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            label.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 50),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
             collectionView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 5),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 188)
         ])
     }
