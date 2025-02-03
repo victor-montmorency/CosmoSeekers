@@ -25,6 +25,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     private func setScrollView(){
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(scrollView)
+        scrollView.showsVerticalScrollIndicator = false
+
         
         
         self.scrollView.addSubview(contentView)
@@ -54,10 +56,18 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     func setupNewsSection() {
         let newsSectionTitle = UILabel()
         contentView.addSubview(newsSectionTitle)
-        let newsView = NewsView()
+        let newsView = NewsView(frame: .zero, image: UIImage(named: "exoplanets-1")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
         contentView.addSubview(newsView)
+        let newsView2 = NewsView(frame: .zero, image: UIImage(named: "nebula2")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
+        contentView.addSubview(newsView2)
+        newsView2.translatesAutoresizingMaskIntoConstraints = false
+        
+        let newsView3 = NewsView(frame: .zero, image: UIImage(named: "cosmos")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
+        contentView.addSubview(newsView3)
+        newsView3.translatesAutoresizingMaskIntoConstraints = false
+        
         newsView.translatesAutoresizingMaskIntoConstraints = false
-        newsSectionTitle.text = "Recent News"
+        newsSectionTitle.text = "Recent Spaceflight News"
         newsSectionTitle.textColor = .label
         newsSectionTitle.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         newsSectionTitle.textColor = .label
@@ -65,12 +75,22 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         NSLayoutConstraint.activate([
             newsSectionTitle.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 32),
             newsSectionTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            
             newsView.topAnchor.constraint(equalTo: newsSectionTitle.bottomAnchor),
             newsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             newsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-
-            newsView.heightAnchor.constraint(equalToConstant: 200),
-
+            newsView.heightAnchor.constraint(equalToConstant: 300),
+            
+            newsView2.topAnchor.constraint(equalTo: newsView.bottomAnchor, constant: 16),
+            newsView2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            newsView2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            newsView2.heightAnchor.constraint(equalToConstant: 300),
+            
+            newsView3.topAnchor.constraint(equalTo: newsView2.bottomAnchor, constant: 16),
+            newsView3.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            newsView3.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            newsView3.heightAnchor.constraint(equalToConstant: 300),
+            newsView3.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             
         ])
     }
