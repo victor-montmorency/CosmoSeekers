@@ -6,27 +6,29 @@
 //
 
 import UIKit
+import Alamofire
 
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     private let imageArray: [UIImage] = [UIImage(named: "nebula")!, UIImage(named: "Gasdwarf")!, UIImage(named: "exoplanets-1")!]
     private let labelArray: [String] = ["Nasa's Image of the day", "Exoplanets", "lorem"]
     let scrollView = UIScrollView()
-    let contentView = UIView() 
+    let contentView = UIView()
     var collectionView: UICollectionView!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setScrollView()
         setupCollectionView()
         setupNewsSection()
+        spaceFlightsAF()
     }
     
     private func setScrollView(){
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(scrollView)
         scrollView.showsVerticalScrollIndicator = false
-
+        
         
         
         self.scrollView.addSubview(contentView)
@@ -35,7 +37,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         let hConst = contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
         hConst.isActive = true
         hConst.priority = UILayoutPriority(50)
-
+        
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
@@ -49,11 +51,17 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             contentView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor),
             
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-
+            
         ])
     }
     
+    func spaceFlightsAF(){
+
+    }
+    
     func setupNewsSection() {
+        
+        
         let newsSectionTitle = UILabel()
         contentView.addSubview(newsSectionTitle)
         let newsView = NewsView(frame: .zero, image: UIImage(named: "exoplanets-1")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
@@ -65,6 +73,21 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         let newsView3 = NewsView(frame: .zero, image: UIImage(named: "cosmos")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
         contentView.addSubview(newsView3)
         newsView3.translatesAutoresizingMaskIntoConstraints = false
+        
+        AF.request(URL(string: "https://api.spaceflightnewsapi.net/v4/articles/?limit=3&offset=3")!).responseDecodable(of: Json4Swift_Base.self) {
+            response in
+            switch response.result {
+            case .success:
+                newsView.newsHeadline.text = response.value?.results?[0].title
+                newsView2.newsHeadline.text = response.value?.results?[1].title
+                newsView3.newsHeadline.text = response.value?.results?[2].title
+                default :
+                print("error")
+            }
+       
+        }
+        
+        
         
         newsView.translatesAutoresizingMaskIntoConstraints = false
         newsSectionTitle.text = "Recent Spaceflight News"
