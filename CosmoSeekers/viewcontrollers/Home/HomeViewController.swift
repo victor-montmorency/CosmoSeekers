@@ -61,26 +61,41 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     func setupNewsSection() {
         
+        var newsViewArray: [NewsView] = []
+        
+        for _ in 0...2 {
+            newsViewArray.append(NewsView(frame: .zero, image: UIImage(named: "placeholderImage")!, headline: ""))
+        }
+        
+        for newsView in newsViewArray {
+            contentView.addSubview(newsView)
+            newsView.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         let newsSectionTitle = UILabel()
         contentView.addSubview(newsSectionTitle)
-        let newsView = NewsView(frame: .zero, image: UIImage(named: "exoplanets-1")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
-        contentView.addSubview(newsView)
-        let newsView2 = NewsView(frame: .zero, image: UIImage(named: "nebula2")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
-        contentView.addSubview(newsView2)
-        newsView2.translatesAutoresizingMaskIntoConstraints = false
+
         
-        let newsView3 = NewsView(frame: .zero, image: UIImage(named: "cosmos")!, headline: "Japan launches Michibiki 6 navigation satellite with fifth H3 rocket")
-        contentView.addSubview(newsView3)
-        newsView3.translatesAutoresizingMaskIntoConstraints = false
-        
-        AF.request(URL(string: "https://api.spaceflightnewsapi.net/v4/articles/?limit=3&offset=3")!).responseDecodable(of: Json4Swift_Base.self) {
+        AF.request(URL(string: "https://api.spaceflightnewsapi.net/v4/articles/?limit=3&offset=3")!).responseDecodable(of: SpaceflightResponse.self) {
             response in
+            print(response)
             switch response.result {
             case .success:
-                newsView.newsHeadline.text = response.value?.results?[0].title
-                newsView2.newsHeadline.text = response.value?.results?[1].title
-                newsView3.newsHeadline.text = response.value?.results?[2].title
+                newsViewArray[0].newsHeadline.text = response.value?.results?[0].title
+                newsViewArray[1].newsHeadline.text = response.value?.results?[1].title
+                newsViewArray[2].newsHeadline.text = response.value?.results?[2].title
+                
+                
+                for (index,newsView) in newsViewArray.enumerated() {
+                    AF.download(URL(string: response.value?.results?[index].image_url ?? "")!).responseData { response in
+                        if let data = response.value {
+                            let img = UIImage(data: data)
+                            newsView.newsImage.image = img
+                        }
+                    }
+                }
+                
+                
                 default :
                 print("error")
             }
@@ -89,7 +104,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         
         
-        newsView.translatesAutoresizingMaskIntoConstraints = false
         newsSectionTitle.text = "Recent Spaceflight News"
         newsSectionTitle.textColor = .label
         newsSectionTitle.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -99,21 +113,21 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             newsSectionTitle.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 32),
             newsSectionTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             
-            newsView.topAnchor.constraint(equalTo: newsSectionTitle.bottomAnchor),
-            newsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            newsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            newsView.heightAnchor.constraint(equalToConstant: 300),
+            newsViewArray[0].topAnchor.constraint(equalTo: newsSectionTitle.bottomAnchor),
+            newsViewArray[0].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            newsViewArray[0].trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            newsViewArray[0].heightAnchor.constraint(equalToConstant: 300),
             
-            newsView2.topAnchor.constraint(equalTo: newsView.bottomAnchor, constant: 16),
-            newsView2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            newsView2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            newsView2.heightAnchor.constraint(equalToConstant: 300),
+            newsViewArray[1].topAnchor.constraint(equalTo: newsViewArray[0].bottomAnchor, constant: 16),
+            newsViewArray[1].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            newsViewArray[1].trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            newsViewArray[1].heightAnchor.constraint(equalToConstant: 300),
             
-            newsView3.topAnchor.constraint(equalTo: newsView2.bottomAnchor, constant: 16),
-            newsView3.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            newsView3.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            newsView3.heightAnchor.constraint(equalToConstant: 300),
-            newsView3.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            newsViewArray[2].topAnchor.constraint(equalTo: newsViewArray[1].bottomAnchor, constant: 16),
+            newsViewArray[2].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            newsViewArray[2].trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            newsViewArray[2].heightAnchor.constraint(equalToConstant: 300),
+            newsViewArray[2].bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             
         ])
     }
