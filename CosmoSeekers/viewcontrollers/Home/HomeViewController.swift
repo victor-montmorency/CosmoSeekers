@@ -11,6 +11,8 @@ import Alamofire
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     private let imageArray: [UIImage] = [UIImage(named: "nebula")!, UIImage(named: "Gasdwarf")!, UIImage(named: "exoplanets-1")!]
     private let labelArray: [String] = ["Nasa's Image of the day", "Exoplanets", "lorem"]
+    
+    private var urlArray: [String] = []
     let scrollView = UIScrollView()
     let contentView = UIView()
     var collectionView: UICollectionView!
@@ -84,7 +86,11 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                 newsViewArray[0].newsHeadline.text = response.value?.results?[0].title
                 newsViewArray[1].newsHeadline.text = response.value?.results?[1].title
                 newsViewArray[2].newsHeadline.text = response.value?.results?[2].title
-                
+                self.urlArray.append((response.value?.results?[0].url)!)
+                self.urlArray.append((response.value?.results?[1].url)!)
+                self.urlArray.append((response.value?.results?[2].url)!)
+                print(self.urlArray)
+
                 
                 for (index,newsView) in newsViewArray.enumerated() {
                     AF.download(URL(string: response.value?.results?[index].image_url ?? "")!).responseData { response in
