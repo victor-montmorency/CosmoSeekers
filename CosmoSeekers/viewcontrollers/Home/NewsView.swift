@@ -12,6 +12,7 @@ class NewsView: UIView {
 
     var newsImage = UIImageView()
     var newsHeadline = UILabel()
+    var url: URL?
     private let arrowImage = UIImageView()
     
      init(frame: CGRect, image: UIImage, headline: String) {
